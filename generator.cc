@@ -24,13 +24,10 @@ int main(int argc, char *argv[]) {
   //Scope of data collection
   int evNo = 0;
   std::vector<int> id, isCharged;
-  std::vector<float> px, py, pz, e, pt, eta, phi;
+  std::vector<float> e, pt, eta, phi;
 
   tree.Branch("id", &id);
   tree.Branch("isCharged", &isCharged); //for future faster analysis
-  tree.Branch("px", &px);
-  tree.Branch("py", &py);
-  tree.Branch("pz", &pz);
   tree.Branch("e", &e);
   tree.Branch("pt", &pt);
   tree.Branch("eta", &eta);
@@ -42,9 +39,6 @@ int main(int argc, char *argv[]) {
     //Emptying vectors before next event
     id.clear();
     isCharged.clear();
-    px.clear();
-    py.clear();
-    pz.clear();
     e.clear();
     pt.clear();
     eta.clear();
@@ -57,9 +51,6 @@ int main(int argc, char *argv[]) {
         continue;
       id.push_back(p.id());
       isCharged.push_back(p.isCharged() ? 1 : 0);
-      px.push_back(p.px());
-      py.push_back(p.py());
-      pz.push_back(p.pz());
       e.push_back(p.e());
       pt.push_back(p.pT());
       eta.push_back(p.eta());
