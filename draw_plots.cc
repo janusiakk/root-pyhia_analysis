@@ -58,12 +58,12 @@ void draw_plots(const char *outDirArg = "") {
       // Canvas loop
       TCanvas *c = new TCanvas(("c_" + name).c_str(), name.c_str(), 1600, 900);
       // Hist title
-      const string title = string(hist->GetTitle()) + " - " + h;
+      const string title = string(hist->GetTitle()) + " - " + h.substr(1);
       hist->SetTitle(title.c_str());
       // Log scale for
       if (h == "hN" && s == "charged")
         gPad->SetLogy();
-      hist->Draw();
+      hist->Draw("HIST");
       c->SaveAs((pngDir / (name + ".png")).string().c_str());
       c->SaveAs((pdfDir / (name + ".pdf")).string().c_str());
       delete c;
@@ -94,7 +94,7 @@ void draw_plots(const char *outDirArg = "") {
         if (h == "hN")
           gPad->SetLogy();
         TH1D *hist = f->Get<TH1D>((h + "_" + s).c_str());
-        hist->Draw();
+        hist->Draw("HIST");
         ++k;
         if (k % perPage == 0 || k == total)
           big->Print(allPdf.c_str());

@@ -6,7 +6,7 @@
 #include <string>
 #include <vector>
 
-//Structure supporting histogram filling
+// Structure supporting histogram filling
 struct Species {
   std::string name;
   std::string title;
@@ -40,7 +40,7 @@ int main(int argc, char *argv[]) {
 
   TFile out(outName.c_str(), "RECREATE");
 
-  //Initialisating all 28 histograms
+  // Initialisating all 28 histograms
   for (auto &s : sp) {
     const std::string n = s.name;
     s.hN = new TH1D(("hN_" + n).c_str(), (s.title + ";N;P(N)").c_str(), 400, 0,
@@ -55,14 +55,15 @@ int main(int argc, char *argv[]) {
                       (s.title + ";#phi [rad];1/N_{ev} dN/d#phi").c_str(), 64,
                       0, TMath::Pi());
   }
-
+  long nEvents = 0;
   while (reader.Next()) {
+    ++nEvents;
     for (Species &s : sp)
-      s.n = 0; //particle counter per event
+      s.n = 0; // particle counter per event
     for (size_t i = 0; i < id.GetSize(); ++i) {
       const int pid = id[i];
       for (Species &s : sp) {
-        //Sorting
+        // Sorting
         const bool match = (s.pdg == 0) ? (isCharged[i] != 0) : (pid == s.pdg);
         if (!match)
           continue;
@@ -74,6 +75,11 @@ int main(int argc, char *argv[]) {
     }
     for (Species &s : sp)
       s.hN->Fill(s.n);
+  }
+  for (Species &s : sp) {
+    s.hN->Scale(1.0 / nEvents);
+    for (TH1D *h : {s.hPt, s.hEta, s.hPhi})
+      h->Scale(1.0 / nEvents, "width");
   }
 
   out.Write();
