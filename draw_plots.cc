@@ -36,6 +36,14 @@ void draw_plots(const char *outDirArg = "") {
   };
   const vector<string> histTypes = {"hN", "hPt", "hEta", "hPhi"};
 
+  // Removes default statbox
+  gStyle->SetOptStat(0);
+  gStyle->SetPadTickX(1);
+  gStyle->SetPadTickY(1);
+  gStyle->SetPadLeftMargin(0.16);
+  gStyle->SetPadBottomMargin(0.20);
+  gROOT->ForceStyle();
+
   // Read checker for future pdf
   bool ok = 1;
   for (const string &h : histTypes) {
@@ -49,6 +57,12 @@ void draw_plots(const char *outDirArg = "") {
       }
       // Canvas loop
       TCanvas *c = new TCanvas(("c_" + name).c_str(), name.c_str(), 1600, 900);
+      // Hist title
+      const string title = string(hist->GetTitle()) + " - " + h;
+      hist->SetTitle(title.c_str());
+      // Log scale for
+      if (h == "hN" && s == "charged")
+        gPad->SetLogy();
       hist->Draw();
       c->SaveAs((pngDir / (name + ".png")).string().c_str());
       c->SaveAs((pdfDir / (name + ".pdf")).string().c_str());
@@ -57,7 +71,7 @@ void draw_plots(const char *outDirArg = "") {
   }
 
   if (ok) {
-    //Big pdf in current directory
+    // Big pdf in current directory
     const string allPdf = (fs::current_path() / "presentation.pdf").string();
     // Customizable for future use
     const size_t perPage = 4;
@@ -76,6 +90,9 @@ void draw_plots(const char *outDirArg = "") {
           big->Divide(2, 2);
         }
         big->cd(k % perPage + 1);
+
+        if (h == "hN")
+          gPad->SetLogy();
         TH1D *hist = f->Get<TH1D>((h + "_" + s).c_str());
         hist->Draw();
         ++k;
