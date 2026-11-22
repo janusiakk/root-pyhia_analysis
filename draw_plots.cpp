@@ -1,8 +1,8 @@
-#include <TROOT.h>
 #include "TFile.h"
 #include <TCanvas.h>
 #include <TH1D.h>
 #include <TLegend.h>
+#include <TROOT.h>
 #include <TStyle.h>
 #include <filesystem>
 #include <iostream>
@@ -13,14 +13,15 @@ namespace fs = std::filesystem;
 using namespace std;
 void draw_plots(const char *outDirArg = "") {
   // Output dir management
-  const fs::path OutDir = (std::string(outDirArg) != "") ? fs::path(outDirArg) : fs::current_path();
+  const fs::path OutDir =
+      (std::string(outDirArg) != "") ? fs::path(outDirArg) : fs::current_path();
   const fs::path pngDir = OutDir / "png";
   const fs::path pdfDir = OutDir / "pdf";
 
   fs::create_directories(pngDir);
   fs::create_directories(pdfDir);
   TFile *f = TFile::Open("analysis.root");
-  //Render canvases offscreen
+  // Render canvases offscreen
   gROOT->SetBatch(kTRUE);
 
   // Null ptr handling
@@ -55,5 +56,39 @@ void draw_plots(const char *outDirArg = "") {
     }
   }
 
+  if (ok) {
+    //Big pdf in current directory
+    const string allPdf = (fs::current_path() / "presentation.pdf").string();
+    // Customizable for future use
+    const size_t perPage = 4;
+    const size_t total = species.size() * histTypes.size();
+
+    TCanvas *big = new TCanvas("big", "all plots", 1600, 1200);
+    // Open multi=page document
+    big->Print((allPdf + "[").c_str());
+
+    size_t k = 0;
+    for (const string &s : species) {
+      for (const string &h : histTypes) {
+        if (k % perPage == 0) {
+          // new slide
+          big->Clear();
+          big->Divide(2, 2);
+        }
+        big->cd(k % perPage + 1);
+        TH1D *hist = f->Get<TH1D>((h + "_" + s).c_str());
+        hist->Draw();
+        ++k;
+        if (k % perPage == 0 || k == total)
+          big->Print(allPdf.c_str());
+      }
+    }
+    // Close multi-page document
+    big->Print((allPdf + "]").c_str());
+    delete big;
+  } else {
+    cerr << "Some histograms were missing, skipping generation of the "
+            "combined PDF\n";
+  }
   f->Close();
 }
