@@ -1,5 +1,10 @@
 #Compiled
-gen
-
+generator
+analysis
+#Dirs
+/png
+/pdf
+#
+data.root
 #Lsp
 .clangd
