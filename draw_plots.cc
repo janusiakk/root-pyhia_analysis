@@ -72,7 +72,7 @@ void draw_plots(const char *outDirArg = "") {
 
   if (ok) {
     // Big pdf in current directory
-    const string allPdf = (fs::current_path() / "presentation.pdf").string();
+    const string allPdf = (OutDir / "presentation.pdf").string();
     // Customizable for future use
     const size_t perPage = 4;
     const size_t total = species.size() * histTypes.size();
