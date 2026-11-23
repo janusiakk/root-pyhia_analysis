@@ -76,6 +76,7 @@ int main(int argc, char *argv[]) {
     for (Species &s : sp)
       s.hN->Fill(s.n);
   }
+  //Scaling
   for (Species &s : sp) {
     s.hN->Scale(1.0 / nEvents);
     for (TH1D *h : {s.hPt, s.hEta, s.hPhi})
