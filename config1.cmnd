@@ -2,7 +2,7 @@ Main:numberOfEvents = 100000
 Beams:idA = 2212
 Beams:idB = 2212
 Beams:eCM = 13600
-SoftQCD:all = on
+SoftQCD:nonDiffractive = on
 Random:setSeed = on
 Random:seed = 2030
 

@@ -6,11 +6,17 @@ Generation of particle collision data in pythia with connection to the Root fram
 - Pythia 8.318
 - gnu make
 - g++ compiler of C++17
-- Root 6
+- Root 6 - compiled at >=C++17
 
-## SHELL :
+### Shell :
+Adjust the paths to your installation and run this in every new shell
+(or put it in `~/.bashrc`) :
 
-
+```bash
+source /path/to/root/bin/thisroot.sh
+export PYTHIA8=/path/to/pythia8318
+export PYTHIA8DATA=$PYTHIA8/share/Pythia8/xmldoc
+```
 ### Build :
 
 ```bash
@@ -47,6 +53,6 @@ root
 
 ### Methodology notes
 
-Histograms are divided by the number of events to give per-event densities independent of statistics and binning. `hN` uses a log y-axis because P(N) spans several orders of magnitude.
+Histograms are divided by the number of events to give per-event densities independent of statistics and binning.
 
 #### The repo contains example analysis.root file so the user can run it with only root framework.

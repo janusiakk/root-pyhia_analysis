@@ -60,9 +60,6 @@ void draw_plots(const char *outDirArg = "") {
       // Hist title
       const string title = string(hist->GetTitle()) + " - " + h.substr(1);
       hist->SetTitle(title.c_str());
-      // Log scale for
-      if (h == "hN" && s == "charged")
-        gPad->SetLogy();
       hist->Draw("HIST");
       c->SaveAs((pngDir / (name + ".png")).string().c_str());
       c->SaveAs((pdfDir / (name + ".pdf")).string().c_str());
@@ -91,8 +88,6 @@ void draw_plots(const char *outDirArg = "") {
         }
         big->cd(k % perPage + 1);
 
-        if (h == "hN")
-          gPad->SetLogy();
         TH1D *hist = f->Get<TH1D>((h + "_" + s).c_str());
         hist->Draw("HIST");
         ++k;
